@@ -34,12 +34,8 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<SystemResponse> register(@Valid @RequestBody UserDTO user) {
         User registeredUser = userService.registerUser(user);
-        UserDTO userResponse = new UserDTO();
-        userResponse.setUsername(registeredUser.getUsername());
-        userResponse.setEmail(registeredUser.getEmail());
-        userResponse.setMobile(registeredUser.getMobile());
 
-        return ResponseEntity.ok().body(new SystemResponse<>(true, "User Registered Successfully!", userResponse));
+        return ResponseEntity.ok().body(new SystemResponse<>(true, "User Registered Successfully!", registeredUser));
     }
 
 
