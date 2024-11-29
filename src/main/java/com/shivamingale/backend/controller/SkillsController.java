@@ -1,8 +1,9 @@
 package com.shivamingale.backend.controller;
 
+
 import com.shivamingale.backend.dto.SystemResponse;
-import com.shivamingale.backend.model.Home;
-import com.shivamingale.backend.service.HomeService;
+import com.shivamingale.backend.model.Skills;
+import com.shivamingale.backend.service.SkillsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,17 +13,15 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/home")
-public class HomeController {
-
+@RequestMapping("/skills")
+public class SkillsController {
     @Autowired
-    private HomeService homeService;
+    private SkillsService skillsService;
 
     @GetMapping("/get-all")
-    public ResponseEntity<SystemResponse> getAllHomeData() {
-        List<Home> homeInfo = homeService.getAllHome();
-        return ResponseEntity.ok().body(new SystemResponse<>(true, "Fetched SuccessFully!", homeInfo));
+    public ResponseEntity<SystemResponse> getAllSkills() {
+        List<Skills> skillsInfo = skillsService.getAllSkills();
+        return ResponseEntity.ok().body(new SystemResponse<>(true, "Fetched Successfully!", skillsInfo));
     }
-
 
 }
