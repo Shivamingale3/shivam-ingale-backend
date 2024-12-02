@@ -1,7 +1,7 @@
 package com.shivamingale.backend.service;
 
-import com.shivamingale.backend.model.Mails;
-import com.shivamingale.backend.repository.MailsRepository;
+import com.shivamingale.backend.model.ContactMe;
+import com.shivamingale.backend.repository.ContactMeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,11 +10,11 @@ import java.util.List;
 
 @Service
 @Transactional
-public class MailsService {
+public class ContactMeService {
     @Autowired
-    private MailsRepository mailsRepository;
+    private ContactMeRepository contactMeRepository;
 
-    public List<Mails> getAllMails() {
-        return mailsRepository.findAll();
+    public List<ContactMe> getAllMails() {
+        return contactMeRepository.findAll();
     }
 }

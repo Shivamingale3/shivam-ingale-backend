@@ -1,17 +1,19 @@
 package com.shivamingale.backend.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shivamingale.backend.dto.LoginDTO;
 import com.shivamingale.backend.dto.UserDTO;
 import com.shivamingale.backend.exception.AppException;
 import com.shivamingale.backend.model.User;
 import com.shivamingale.backend.repository.UserRepository;
-import com.shivamingale.backend.util.RedisKeys;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -23,16 +25,20 @@ public class UserService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
     private final UserRepository userRepository;
-    private final RedisService redisService;
+    @Autowired
     private ModelMapper modelMapper;
+    @Autowired
+    private JwtService jwtService;
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
 
     @Autowired
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, RedisService redisService, RedisKeys redisKeys) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-        this.redisService = redisService;
     }
 
 
@@ -57,23 +63,26 @@ public class UserService {
 
 
     public User loginUser(LoginDTO loginDetails) {
-        User user = null;
 
-        if (loginDetails.getUsername() != null && loginDetails.getUsername().length() > 1) {
-            user = userRepository.findByUsername(loginDetails.getUsername()).orElseThrow(() -> AppException.notFound(loginDetails.getUsername()));
-        } else if (loginDetails.getEmail() != null && loginDetails.getEmail().length() > 1) {
-            user = userRepository.findByEmail(loginDetails.getEmail()).orElseThrow(() -> AppException.notFound(loginDetails.getEmail()));
-        } else if (loginDetails.getMobile() != null && loginDetails.getMobile().length() > 1) {
-            user = userRepository.findByMobile(loginDetails.getMobile()).orElseThrow(() -> AppException.notFound(loginDetails.getMobile()));
-        } else {
-            throw AppException.notFound("No Username / Email / Mobile received!");
-        }
-        if (passwordEncoder.matches(loginDetails.getPassword(), user.getPassword())) {
-            return user;
-        } else {
-            throw AppException.authenticationFailed("Invalid password");
-        }
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        loginDetails.getEmail(), loginDetails.getPassword()
+                )
+        );
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        User user = userRepository.findByEmail(loginDetails.getEmail())
+                .orElseThrow(() -> AppException.notFound("Email not found: " + loginDetails.getEmail()));
+        ;
+        String token = jwtService.generateToken(user);
+        user.setJWTToken(token);
+        return user;
     }
 
+    public User getUserByUsername(String username) {
+        return userRepository.findByUsername(username).orElseThrow(() -> AppException.notFound("User by username: " + username));
+    }
 
+    public User getUserByEmail(String email) {
+        return userRepository.findByUsername(email).orElseThrow(() -> AppException.notFound("User by email: " + email));
+    }
 }

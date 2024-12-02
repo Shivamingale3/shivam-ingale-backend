@@ -1,8 +1,10 @@
 package com.shivamingale.backend.controller;
 
 import com.shivamingale.backend.dto.SystemResponse;
-import com.shivamingale.backend.model.Mails;
-import com.shivamingale.backend.service.MailsService;
+import com.shivamingale.backend.model.ContactMe;
+import com.shivamingale.backend.service.ContactMeService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,14 +15,16 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/mails")
-public class MailsController {
+public class ContactMeController {
+    private static final Logger logger = LoggerFactory.getLogger(ContactMeController.class);
+
     @Autowired
-    private MailsService mailsService;
+    private ContactMeService contactMeService;
 
     @GetMapping("/get-all")
     public ResponseEntity<SystemResponse> getAllMails() {
-        List<Mails> mailsInfo = mailsService.getAllMails();
-        return ResponseEntity.ok().body(new SystemResponse<>(true, "Fetched Successfully!", mailsInfo));
+        List<ContactMe> contactMeInfo = contactMeService.getAllMails();
+        return ResponseEntity.ok().body(new SystemResponse<>(true, "Fetched Successfully!", contactMeInfo));
     }
 
 }

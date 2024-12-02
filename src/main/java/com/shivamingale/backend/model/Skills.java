@@ -18,4 +18,5 @@ public class Skills {
     private String name;
     private String iconLink;
     private Short score;
+    private String domain;
 }

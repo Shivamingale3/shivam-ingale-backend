@@ -29,4 +29,7 @@ public class Home {
     private Short experience;
 
     private Short projects;
+    @Indexed(unique = true)
+    private String domain;
+
 }

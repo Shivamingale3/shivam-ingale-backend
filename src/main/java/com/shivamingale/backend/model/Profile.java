@@ -38,5 +38,6 @@ public class Profile {
     private String resumeLink;
 
     private String hireMeLink;
-
+    @Indexed(unique = true)
+    private String domain;
 }

@@ -12,10 +12,11 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Getter
 @Setter
 @Document(collection = "emails")
-public class Mails {
+public class ContactMe {
     @Id
     private String id;
     private String senderName;
     private String senderEmail;
     private String body;
+    private String domain;
 }

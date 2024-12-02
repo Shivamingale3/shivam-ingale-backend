@@ -24,4 +24,5 @@ public class Education {
     private Date to;
     private String percent;
     private String description;
+    private String domain;
 }

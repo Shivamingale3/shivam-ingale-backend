@@ -22,4 +22,5 @@ public class Experience {
     private String to;
     private String address;
     private String description;
+    private String domain;
 }
